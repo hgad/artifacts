@@ -8,7 +8,7 @@ Description: Hangman game using Python Curses.
 
 from random import randint
 from sets import Set
-from sys import stdout, exit
+from sys import stdout, stderr, exit
 from os.path import isfile
 import curses
 
@@ -232,8 +232,8 @@ class Controller():
 
 
 def main():
+  filepath = "/usr/share/dict/words"
   try:
-    filepath = "/usr/share/dict/words"
     if not isfile(filepath):
       filepath = input("Please enter a newline-delimited words file path: ")
 
@@ -242,6 +242,9 @@ def main():
   except KeyboardInterrupt:
     print >>stdout, "Good Bye!"
     return 0
+  except IOError:
+    print >>stderr, "Cannot open file: " + filepath + ". Exiting."
+    return 1
 
 
 if __name__ == "__main__":
