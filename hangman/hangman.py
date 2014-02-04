@@ -59,14 +59,18 @@ class View():
     self.initColorPairs()
     self.theme1 = curses.color_pair(1)
     self.theme2 = curses.color_pair(2)
+    self.theme3 = curses.color_pair(3)
+    self.theme4 = curses.color_pair(4)
     self.height, self.width = self.scr.getmaxyx()
     self.wrongGuesses = 0
     self.steps = [self.leftLeg, self.rightLeg, self.body,
                   self.leftArm, self.rightArm, self.head, self.rope]
 
   def initColorPairs(self):
-    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_GREEN)
-    curses.init_pair(2, curses.COLOR_RED,   curses.COLOR_GREEN)
+    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
+    curses.init_pair(2, curses.COLOR_BLUE,  curses.COLOR_WHITE)
+    curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_WHITE)
+    curses.init_pair(4, curses.COLOR_RED,   curses.COLOR_WHITE)
 
   def rect(self, ch, y1, x1, y2, x2):
     for i in range(y1, y2):
@@ -143,8 +147,9 @@ class View():
     self.head(True)
     self.rope(True)
 
-  def message(self, msg):
-    self.scr.addstr(self.height - 6, 2, msg, self.theme2)
+  def message(self, msg, theme = None):
+    self.scr.addstr(self.height - 6, 2, msg,
+                    theme if theme is not None else self.theme1)
     self.hideCursor()
 
   def clearMessage(self):
@@ -180,6 +185,15 @@ class View():
   def getch(self):
     return chr(self.scr.getch())
 
+  def repeatedChar(self, c):
+    self.message("Repeated Character: " + c, self.theme2)
+
+  def youWon(self):
+    self.message("You Won :-), Play again? [y/n]", self.theme3)
+
+  def gameOver(self):
+    self.message("Game Over :-(, Play again? [y/n]", self.theme4)
+
 
 # Hangman controller
 class Controller():
@@ -212,19 +226,19 @@ class Controller():
       c = self.view.getch()
       self.view.clearMessage()
       if c in self.usedChars:
-        self.view.message("Repeated Character: " + c)
+        self.view.repeatedChar(c)
         continue
 
       self.usedChars.add(c)
       if not self.model.wordHas(c):
         self.couldTakeStep = self.view.wrongGuess()
         if not self.couldTakeStep:
-          self.view.message("Game Over :-(, Play again? [y/n]")
+          self.view.gameOver()
       else:
         self.model.updateGuessWord(c)
         self.view.updateGuessWord(self.model.guessWord)
         if not self.model.guessWordHas("-"):
-          self.view.message("You Won :-), Play again? [y/n]")
+          self.view.youWon()
 
       if not (self.couldTakeStep and self.model.guessWordHas("-")):
         self.view.updateGuessWord(self.model.word)
