@@ -178,10 +178,8 @@ class View():
     self.height, self.width = self.scr.getmaxyx()
     self.hideCursor()
 
-  def refresh(self):
-    self.scr.refresh()
-
   def getch(self):
+    self.scr.refresh()
     return chr(self.scr.getch()).lower()
 
   def repeatedChar(self, c):
@@ -216,8 +214,6 @@ class Controller():
         break
       elif c == 'n':
         raise KeyboardInterrupt
-
-      self.view.refresh()
       c = self.view.getch()
 
   def hangman(self, stdscr):
@@ -225,7 +221,6 @@ class Controller():
     self.reset()
 
     while True:
-      self.view.refresh()
       c = self.view.getch()
       self.view.clearMessage()
       if c in self.usedChars:
