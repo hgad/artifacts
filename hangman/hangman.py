@@ -8,7 +8,8 @@ Description: Hangman game using Curses
 
 from random import randint
 from sets import Set
-from sys import stderr, exit
+from sys import stdout, exit
+from os.path import isfile
 import curses
 
 
@@ -23,9 +24,16 @@ class Model():
     with open(filename) as f:
       self.words = f.readlines()
 
+  def validWord(self, word):
+    return (len(word) > 2 and word.find('-') == -1)
+
   def pickWord(self):
     index = randint(0, len(self.words) - 1)
-    return self.words[index].rstrip()
+    word = self.words[index].rstrip()
+    while not self.validWord(word):
+      index = randint(0, len(self.words) - 1)
+      word = self.words[index].rstrip()
+    return word.lower()
 
   def reset(self):
     self.word = self.pickWord()
@@ -225,11 +233,15 @@ class Controller():
 
 def main():
   try:
-    controller = Controller(Model("./words.txt"))
+    filepath = "/usr/share/dict/words"
+    if not isfile(filepath):
+      filepath = input("Please enter a newline-delimited words file path: ")
+
+    controller = Controller(Model(filepath))
     curses.wrapper(controller.hangman)
   except KeyboardInterrupt:
-    print >>stderr, "Good Bye!"
-    return 1
+    print >>stdout, "Good Bye!"
+    return 0
 
 
 if __name__ == "__main__":
