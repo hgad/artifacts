@@ -7,7 +7,6 @@ Description: Hangman game using Python Curses.
 """
 
 from random import randint
-from sets import Set
 from sys import stdout, stderr, exit
 from os.path import isfile
 import curses
@@ -183,7 +182,7 @@ class View():
     self.scr.refresh()
 
   def getch(self):
-    return chr(self.scr.getch())
+    return chr(self.scr.getch()).lower()
 
   def repeatedChar(self, c):
     self.message("Repeated Character: " + c, self.theme2)
@@ -200,7 +199,7 @@ class Controller():
   def __init__(self, model):
     self.model = model
     self.view = None
-    self.usedChars = Set()
+    self.usedChars = set()
     self.couldTakeStep = True
 
   def reset(self):
