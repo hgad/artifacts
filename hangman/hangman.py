@@ -209,12 +209,16 @@ class Controller():
     self.couldTakeStep = True
 
   def readAnswer(self):
-    self.view.refresh()
-    c = self.view.getch()
-    if c == 'y':
-      self.reset()
-    else:
-      raise KeyboardInterrupt
+    c = 'a'
+    while True:
+      if c == 'y':
+        self.reset()
+        break
+      elif c == 'n':
+        raise KeyboardInterrupt
+
+      self.view.refresh()
+      c = self.view.getch()
 
   def hangman(self, stdscr):
     self.view = View(stdscr)
