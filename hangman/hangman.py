@@ -3,7 +3,7 @@
 """
 Author: Haitham Gad
 Date: Feb 4, 2014
-Description: Hangman game using Curses
+Description: Hangman game using Python Curses.
 """
 
 from random import randint
