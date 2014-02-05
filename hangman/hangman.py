@@ -60,8 +60,9 @@ class View():
     self.theme2 = curses.color_pair(2)
     self.theme3 = curses.color_pair(3)
     self.theme4 = curses.color_pair(4)
-    self.height, self.width = self.scr.getmaxyx()
     self.wrongGuesses = 0
+    self.height, self.width = self.scr.getmaxyx()
+    self.height = min(self.height, 25)
     self.steps = [self.leftLeg, self.rightLeg, self.body,
                   self.leftArm, self.rightArm, self.head, self.rope]
 
@@ -175,12 +176,14 @@ class View():
     self.updateGuessWord(guessWord + " " * 10)
     self.message(" " * 32)
     self.eraseBody()
-    self.height, self.width = self.scr.getmaxyx()
     self.hideCursor()
 
   def getch(self):
     self.scr.refresh()
-    return chr(self.scr.getch()).lower()
+    c = self.scr.getch()
+    while c > 255:
+      c = self.scr.getch()
+    return chr(c).lower()
 
   def repeatedChar(self, c):
     self.message("Repeated Character: " + c, self.theme2)
