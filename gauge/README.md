@@ -60,7 +60,8 @@ for test2():
       profiler::report();
     }
 
-To compile this code, run the following command:
+To compile this code, run the following command (boost library names might be
+different on different systems):
 
     c++ file.cpp -I/path/to/boost/headers -L/path/to/boost/libs \
                  -lboost_timer-mt -lboost_system-mt
