@@ -33,7 +33,7 @@ for test2():
 
       {
         profiler pf;
-        timer tm;
+        timer tm("test() timer");
 
         for (long i = 0; i < 1000000000; ++i);
       } // gauge::timer reports time here
@@ -42,7 +42,7 @@ for test2():
     }
 
     void test2() {
-      profiler pf;
+      profiler pf("test2() profiler");
       timer tm;
 
       for (long i = 0; i < 1000000000; ++i);

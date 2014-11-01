@@ -30,33 +30,41 @@
 
 #pragma once
 
+#include <string>
 #include <iostream>
 #include <boost/noncopyable.hpp>
 #include <boost/timer/timer.hpp>
 
 namespace gauge {
 
-inline void report_time(const char *tool, double cpu_time, double wall_time) {
-  std::cout << tool << ": [[ cpu = " << cpu_time / 1e9
+inline void report_time(
+  const std::string &msg,
+  double cpu_time,
+  double wall_time
+) {
+  std::cout << msg << ": [[ cpu = " << cpu_time / 1e9
             << " sec, wall = " << wall_time / 1e9 << " sec ]]" << std::endl;
 }
 
 class timer : public boost::noncopyable {
   public:
-    timer() {}
+    timer(const std::string &msg = "timer"): d_msg(msg) {}
 
     ~timer() {
       boost::timer::cpu_times dur = d_timer.elapsed();
-      report_time("timer", dur.user + dur.system, dur.wall);
+      report_time(d_msg, dur.user + dur.system, dur.wall);
     }
 
   private:
+    const std::string d_msg;
     boost::timer::cpu_timer d_timer;
 };
 
 class profiler : public boost::noncopyable {
   public:
-    profiler() {}
+    profiler(const std::string &message = "profiler") {
+      msg() = message;
+    }
 
     ~profiler() {
       boost::timer::cpu_times dur = d_timer.elapsed();
@@ -70,7 +78,7 @@ class profiler : public boost::noncopyable {
     }
 
     static void report() {
-      report_time("profiler", cpu_time(), wall_time());
+      report_time(msg(), cpu_time(), wall_time());
     }
 
     static double &cpu_time() {
@@ -81,6 +89,11 @@ class profiler : public boost::noncopyable {
     static double &wall_time() {
       static double s_wall_time = 0.0;
       return s_wall_time;
+    }
+
+    static std::string &msg() {
+      static std::string s_msg = "profiler";
+      return s_msg;
     }
 
   private:
