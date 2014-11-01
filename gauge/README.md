@@ -6,21 +6,22 @@ time of code sections. It provides two classes:
 
 1. `gauge::timer`: Measures the time spent in a code section when executed once.
 2. `gauge::profiler`: Measures the accumulative time spent in a code section
-   over the lifetime of the program.
+   over the entire (or partial) lifetime of the program.
 
-`gauge::timer` dumps its report to stdout in the destructor. So to measure the
-time spent in code snippet, first wrap it in braces {}.
+`gauge::timer` dumps its report in the destructor, so to measure the time spent
+in a code snippet, first wrap it in braces {}.
 
 `gauge::profiler` reports the time only when you call `profiler::report()`. You
-should call this method when all the instances of your code section have already
-been executed. To reset the profiler, call `profiler::reset()`.
+should call this method when all the instances of your code section that you're
+interested in have been executed. To reset the profiler time, call
+`profiler::reset()`.
 
 
 Example
 -------
 
-This example uses guage to measure the time spent in every call to test(),
-reports the profiler' accumulative time, resets the profiler and does the same
+This example uses gauge to measure the time spent in every call to test(),
+reports the profiler's accumulative time, resets the profiler and does the same
 for test2():
 
     #include "gauge.hpp"
