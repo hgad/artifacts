@@ -1,11 +1,12 @@
-Gauge: Time Profiler
+Gauge: A Time Profiler
 ====================
 
-Gauge is a tiny single-header-file library to quicly measure CPU and Wall Clock
-time of sections of code. It provides two classes:
+Gauge is a tiny single-header-file library to quickly measure CPU and Wall-Clock
+time of code sections. It provides two classes:
 
 1. `gauge::timer`: Measures the time spent in a code section when executed once.
-2. `gauge::profiler`: Measures the accumulative time spent in a code section over the lifetime of the program.
+2. `gauge::profiler`: Measures the accumulative time spent in a code section
+   over the lifetime of the program.
 
 `gauge::timer` dumps its report to stdout in the destructor. So to measure the
 time spent in code snippet, first wrap it in braces {}.
@@ -60,7 +61,8 @@ for test2():
 
 To compile this code, run the following command:
 
-    c++ -I/path/to/boost/headers -L/path/to/boost/libs -lboost_timer-mt -lboost_system-mt file.cpp
+    c++ file.cpp -I/path/to/boost/headers -L/path/to/boost/libs \
+                 -lboost_timer-mt -lboost_system-mt
 
 The output on my machine looks like this:
 
