@@ -9,7 +9,7 @@ time of code sections. It provides two classes:
    over the entire (or partial) lifetime of the program.
 
 `gauge::timer` dumps its report in the destructor, so to measure the time spent
-in a code snippet, first wrap it in braces {}.
+in a code snippet, first wrap it in braces.
 
 `gauge::profiler` reports the time only when you call `profiler::report()`. You
 should call this method when all the instances of your code section that you're
