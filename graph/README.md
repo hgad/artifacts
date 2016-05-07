@@ -55,7 +55,8 @@ class Graph {
 };
 ```
 
-Where `Node` and `Edge` have the following interfaces:
+`addEdge()` adds the terminal nodes if they haven't already been added. `Node`
+and `Edge` have the following interfaces:
 
 ```cpp
 template <typename NodeId, typename NodeData, typename EdgeData>
@@ -99,7 +100,7 @@ class Edge {
 };
 ```
 
-Finally, the breadth-first iterator and depth-first iterators have the regular
+Finally, the breadth-first and depth-first iterators have the regular
 forward-iterator interface except that they're non-copyable. Moreover, the
 breadth-first iterator has a `parent()` method that returns the parent node of
 the current node.
