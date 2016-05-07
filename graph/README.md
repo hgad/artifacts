@@ -181,7 +181,7 @@ class ShortestDistCalc {
       }
 
       auto sIt  = _g.breadthBegin(s), eIt = _g.breadthBegin(e),
-          last = _g.breadthEnd();
+           last = _g.breadthEnd();
 
       ++sIt;
       ++eIt;
