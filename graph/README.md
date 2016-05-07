@@ -3,55 +3,57 @@ Graph
 
 An easy-to-use graph implementation. Here's the class interface:
 
-    template <typename NodeId = int, typename NodeData = int,
-              typename EdgeData = int, bool Directed = false>
-    class Graph {
-      public:
-        using NodeIdType    = NodeId;
-        using NodeDataType  = NodeData;
-        using NodeType      = Node<NodeId, NodeData, EdgeData>;
+```cpp
+template <typename NodeId = int, typename NodeData = int,
+          typename EdgeData = int, bool Directed = false>
+class Graph {
+  public:
+    using NodeIdType    = NodeId;
+    using NodeDataType  = NodeData;
+    using NodeType      = Node<NodeId, NodeData, EdgeData>;
 
-        using EdgeDataType  = EdgeData;
-        using EdgeType      = Edge<NodeId, NodeData, EdgeData>;
+    using EdgeDataType  = EdgeData;
+    using EdgeType      = Edge<NodeId, NodeData, EdgeData>;
 
-        Graph()             = default;
-        Graph(Graph&&)      = default;
-        Graph(const Graph&) = delete;
+    Graph()             = default;
+    Graph(Graph&&)      = default;
+    Graph(const Graph&) = delete;
 
-        Graph& operator=(Graph&&)      = default;
-        Graph& operator=(const Graph&) = delete;
+    Graph& operator=(Graph&&)      = default;
+    Graph& operator=(const Graph&) = delete;
 
-        bool directed() const;
+    bool directed() const;
 
-        // unspecified-order node iterators
-        auto nodesSize();
-        auto nodesBegin();
-        auto nodesEnd();
+    // unspecified-order node iterators
+    auto nodesSize();
+    auto nodesBegin();
+    auto nodesEnd();
 
-        // unspecified-order edge iterators
-        auto edgesSize();
-        auto edgesBegin();
-        auto edgesEnd();
+    // unspecified-order edge iterators
+    auto edgesSize();
+    auto edgesBegin();
+    auto edgesEnd();
 
-        // breadth-first node iterators (movable but non-copyable)
-        auto breadthBegin(NodeId start);
-        auto breadthEnd();
+    // breadth-first node iterators (movable but non-copyable)
+    auto breadthBegin(NodeId start);
+    auto breadthEnd();
 
-        // depth-first node iterators (movable but non-copyable)
-        auto depthBegin(NodeId start, bool postorder = false);
-        auto depthEnd(bool postorder = false);
+    // depth-first node iterators (movable but non-copyable)
+    auto depthBegin(NodeId start, bool postorder = false);
+    auto depthEnd(bool postorder = false);
 
-        bool hasNode(NodeId id) const;
-        NodeType* getNode(NodeId id) const;
-        NodeType* addNode(NodeId id, const NodeData& data = NodeData());
+    bool hasNode(NodeId id) const;
+    NodeType* getNode(NodeId id) const;
+    NodeType* addNode(NodeId id, const NodeData& data = NodeData());
 
-        bool hasEdge(NodeId startNodeId, NodeId endNodeId) const;
-        EdgeType* getEdge(NodeId startNodeId, NodeId endNodeId) const;
-        EdgeType* addEdge(NodeId startNodeId, NodeId endNodeId,
-                          const EdgeData& edgeData = EdgeData(),
-                          const NodeData& startNodeData = NodeData(),
-                          const NodeData& endNodeData = NodeData());
-    };
+    bool hasEdge(NodeId startNodeId, NodeId endNodeId) const;
+    EdgeType* getEdge(NodeId startNodeId, NodeId endNodeId) const;
+    EdgeType* addEdge(NodeId startNodeId, NodeId endNodeId,
+                      const EdgeData& edgeData = EdgeData(),
+                      const NodeData& startNodeData = NodeData(),
+                      const NodeData& endNodeData = NodeData());
+};
+```
 
 Where `Node` and `Edge` have the following interfaces:
 
