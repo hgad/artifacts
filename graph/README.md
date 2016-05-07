@@ -55,6 +55,11 @@ class Graph {
 };
 ```
 
+The breadth-first and depth-first iterators have the regular forward iterator
+interface except that they're non-copyable (therefore, also don't have a suffix
+increment operator). Moreover, the breadth-first iterator has a `parent()`
+method that returns the parent node of the current node.
+
 `addEdge()` adds the terminal nodes if they haven't already been added. `Node`
 and `Edge` have the following interfaces:
 
@@ -97,11 +102,6 @@ class Edge {
     NodeType* otherNode(const NodeType* n) const;
 };
 ```
-
-Finally, the breadth-first and depth-first iterators have the regular
-forward-iterator interface except that they're non-copyable. Moreover, the
-breadth-first iterator has a `parent()` method that returns the parent node of
-the current node.
 
 Following is a dynamic-programming implementation of breadth-first
 shortest-distance algorithm using this class (HackerRank's first graph problem):
