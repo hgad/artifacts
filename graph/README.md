@@ -62,7 +62,6 @@ and `Edge` have the following interfaces:
 template <typename NodeId, typename NodeData, typename EdgeData>
 class Node {
   public:
-    using NodeType = Node<NodeId, NodeData, EdgeData>;
     using EdgeType = Edge<NodeId, NodeData, EdgeData>;
 
     NodeId    id()   const;
@@ -86,7 +85,6 @@ template <typename NodeId, typename NodeData, typename EdgeData>
 class Edge {
   public:
     using NodeType = Node<NodeId, NodeData, EdgeData>;
-    using EdgeType = Edge<NodeId, NodeData, EdgeData>;
 
     bool hasNode(const NodeType* n) const;
 

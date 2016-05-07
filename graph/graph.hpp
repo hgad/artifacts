@@ -95,7 +95,6 @@ OtherNodeIter<NodeType, Iter> otherNodeIter(NodeType* node, Iter iter) {
 template <typename NodeId, typename NodeData, typename EdgeData>
 class Node {
   public:
-    using NodeType = Node<NodeId, NodeData, EdgeData>;
     using EdgeType = Edge<NodeId, NodeData, EdgeData>;
 
     NodeId    id()   const { return _id;   }
@@ -204,7 +203,6 @@ template <typename NodeId, typename NodeData, typename EdgeData>
 class Edge {
   public:
     using NodeType = Node<NodeId, NodeData, EdgeData>;
-    using EdgeType = Edge<NodeId, NodeData, EdgeData>;
 
     bool hasNode(const NodeType* n) const { return _id.hasNode(n); }
 
