@@ -669,7 +669,7 @@ class Graph {
 
   private:
     using NodeCont = std::unordered_map<NodeId, std::unique_ptr<NodeType>>;
-    using EdgeCont   = EdgeContainerT<EdgeIdType, EdgeType, NodeType, MultiGraph>;
+    using EdgeCont = EdgeContainerT<EdgeIdType, EdgeType, NodeType, MultiGraph>;
 
     NodeCont _nodes;
     EdgeCont _edges;
