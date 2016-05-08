@@ -203,8 +203,8 @@ class ShortestDistCalc {
         auto eId = (*eIt)->id();
         auto eParentId = eIt.parent()->id();
 
-        addDistance(sId, sParentId, _g.getEdge(sId, sParentId)->data());
-        addDistance(eId, eParentId, _g.getEdge(eId, eParentId)->data());
+        addDistance(sParentId, sId, _g.getEdge(sParentId, sId)->data());
+        addDistance(eParentId, eId, _g.getEdge(eParentId, eId)->data());
 
         addDistance(s, sId, distance(s, sParentId) + distance(sParentId, sId));
         addDistance(e, eId, distance(e, eParentId) + distance(eParentId, eId));
