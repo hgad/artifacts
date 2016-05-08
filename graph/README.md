@@ -4,15 +4,15 @@ Graph
 An easy-to-use graph implementation. Here's the class interface:
 
 ```cpp
-template <typename NodeId = int, typename NodeData = int,
-          typename EdgeData = int, bool Directed = false>
+template <typename NodeId = int, typename NodeData = int, typename EdgeData = int,
+          bool Directed = false, bool MultiGraph = false>
 class Graph {
   public:
     using NodeIdType    = NodeId;
     using NodeDataType  = NodeData;
-    using NodeType      = Node<NodeId, NodeData, EdgeData>;
-
     using EdgeDataType  = EdgeData;
+
+    using NodeType      = Node<NodeId, NodeData, EdgeData>;
     using EdgeType      = Edge<NodeId, NodeData, EdgeData>;
 
     Graph()             = default;
@@ -23,35 +23,43 @@ class Graph {
     Graph& operator=(const Graph&) = delete;
 
     bool directed() const;
+    bool multigraph() const;
+
+    // node & edge counts
+    auto nodesSize();
+    auto edgesSize();
 
     // unspecified-order node iterators
-    auto nodesSize();
     auto nodesBegin();
     auto nodesEnd();
 
     // unspecified-order edge iterators
-    auto edgesSize();
     auto edgesBegin();
     auto edgesEnd();
 
-    // breadth-first node iterators (movable but non-copyable)
+    // breadth-first node iterators
     auto breadthBegin(NodeId start);
     auto breadthEnd();
 
-    // depth-first node iterators (movable but non-copyable)
+    // depth-first node iterators
     auto depthBegin(NodeId start, bool postorder = false);
     auto depthEnd(bool postorder = false);
 
     bool hasNode(NodeId id) const;
     NodeType* getNode(NodeId id) const;
-    NodeType* addNode(NodeId id, const NodeData& data = NodeData());
 
     bool hasEdge(NodeId startNodeId, NodeId endNodeId) const;
     EdgeType* getEdge(NodeId startNodeId, NodeId endNodeId) const;
+
+    // edge range (iterator pair) for multigraphs
+    auto getEdges(NodeId startNodeId, NodeId endNodeId) const;
+
+    NodeType* addNode(NodeId id, const NodeData& data = NodeData());
+
     EdgeType* addEdge(NodeId startNodeId, NodeId endNodeId,
-                      const EdgeData& edgeData = EdgeData(),
+                      const EdgeData& edgeData      = EdgeData(),
                       const NodeData& startNodeData = NodeData(),
-                      const NodeData& endNodeData = NodeData());
+                      const NodeData& endNodeData   = NodeData());
 };
 ```
 
