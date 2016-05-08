@@ -619,9 +619,7 @@ class Graph {
     }
 
     NodeType* addNode(NodeId id, const NodeData& data = NodeData()) {
-      if (hasNode(id)) {
-        throw Exception("node already exists");
-      }
+      assert(!hasNode(id));
 
       _nodes[id] = std::unique_ptr<NodeType>(new NodeType(id, data));
       return getNode(id);
