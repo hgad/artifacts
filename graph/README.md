@@ -45,17 +45,19 @@ class Graph {
     auto depthBegin(NodeId start, bool postorder = false);
     auto depthEnd(bool postorder = false);
 
+    // query node/edge
     bool hasNode(NodeId id) const;
-    NodeType* getNode(NodeId id) const;
-
     bool hasEdge(NodeId startNodeId, NodeId endNodeId) const;
+
+    // retrieve node/edge (must exist)
+    NodeType* getNode(NodeId id) const;
     EdgeType* getEdge(NodeId startNodeId, NodeId endNodeId) const;
 
-    // edge range (iterator pair) for multigraphs
+    // retrieve edge range (iterator pair) for multigraphs
     auto getEdges(NodeId startNodeId, NodeId endNodeId) const;
 
+    // add node/edge
     NodeType* addNode(NodeId id, const NodeData& data = NodeData());
-
     EdgeType* addEdge(NodeId startNodeId, NodeId endNodeId,
                       const EdgeData& edgeData      = EdgeData(),
                       const NodeData& startNodeData = NodeData(),
