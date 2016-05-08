@@ -516,8 +516,9 @@ template <typename Pair>
 struct EdgeRange :
   public std::pair<decltype(valueIter(std::declval<Pair>().first)),
                    decltype(valueIter(std::declval<Pair>().second))> {
-  using EntryFirst = decltype(valueIter(std::declval<Pair>().first));
+  using EntryFirst  = decltype(valueIter(std::declval<Pair>().first));
   using EntrySecond = decltype(valueIter(std::declval<Pair>().second));
+
   EdgeRange(const Pair& p):
     std::pair<EntryFirst, EntrySecond>(valueIter(p.first), valueIter(p.second))
   {}
