@@ -125,7 +125,8 @@ class Node {
     Node& operator=(Node&&)      = default;
     Node& operator=(const Node&) = delete;
 
-    template <typename NId, typename NData, typename EData, bool Directed>
+    template <typename NId, typename NData, typename EData,
+              bool Directed, bool MultiGraph>
     friend class Graph;
 
     void addEdge(EdgeType* e) { _edges.push_back(e); }
@@ -159,7 +160,8 @@ class EdgeId {
     template <typename EdgeData, typename NodeId, typename NodeData>
     friend class Edge;
 
-    template <typename NId, typename NData, typename EData, bool Directed>
+    template <typename NId, typename NData, typename EData,
+              bool Directed, bool MultiGraph>
     friend class Graph;
 
     friend bool operator==(const EdgeId& edgeId1, const EdgeId& edgeId2) {
@@ -218,7 +220,8 @@ class Edge {
   private:
     using EdgeIdType = EdgeId<NodeType>;
 
-    template <typename NId, typename NData, typename EData, bool Directed>
+    template <typename NId, typename NData, typename EData,
+              bool Directed, bool MultiGraph>
     friend class Graph;
 
     Edge(NodeType* startNode, NodeType* endNode,
@@ -269,17 +272,6 @@ class ValueIter {
     ValueIter& operator++(int) {
       ValueIter it = *this;
       ++_iter;
-      return it;
-    }
-
-    ValueIter& operator--() {
-      --_iter;
-      return *this;
-    }
-
-    ValueIter& operator--(int) {
-      ValueIter it = *this;
-      --_iter;
       return it;
     }
 
@@ -500,17 +492,56 @@ DepthIter<NodeType> depthIter(NodeType* node, bool postorder = false) {
   return DepthIter<NodeType>(node, postorder);
 }
 
+template <typename EdgeIdType, typename EdgeType, typename NodeType,
+          bool MultiGraph>
+struct EdgeContainer {
+  using type =
+    std::unordered_map<EdgeIdType, std::unique_ptr<EdgeType>,
+                       EdgeIdHasher<NodeType>>;
+};
+
+template <typename EdgeIdType, typename EdgeType, typename NodeType>
+struct EdgeContainer<EdgeIdType, EdgeType, NodeType, true> {
+  using type =
+    std::unordered_multimap<EdgeIdType, std::unique_ptr<EdgeType>,
+                            EdgeIdHasher<NodeType>>;
+};
+
+template <typename EdgeIdType, typename EdgeType, typename NodeType,
+          bool MultiGraph>
+using EdgeContainerT = typename EdgeContainer<EdgeIdType, EdgeType,
+                                              NodeType, MultiGraph>::type;
+
+template <typename EdgeIdType, typename EdgeType, typename NodeType,
+          bool MultiGraph>
+struct EdgeRange {
+  using EdgeEntryIter = typename
+    EdgeContainerT<EdgeIdType, EdgeType, NodeType, MultiGraph>::const_iterator;
+  using EdgeEntryIterPair = std::pair<EdgeEntryIter, EdgeEntryIter>;
+  using EdgeIterType = ValueIter<EdgeEntryIter>;
+
+  EdgeRange(const EdgeEntryIterPair& p):
+    first(valueIter(p.first)),
+    second(valueIter(p.second))
+  {}
+
+  EdgeIterType first;
+  EdgeIterType second;
+};
+
 template <typename NodeId = int, typename NodeData = int, typename EdgeData = int,
-          bool Directed = false>
+          bool Directed = false, bool MultiGraph = false>
 class Graph {
   public:
-    using NodeIdType   = NodeId;
-    using NodeDataType = NodeData;
-    using EdgeDataType = EdgeData;
+    using NodeIdType    = NodeId;
+    using NodeDataType  = NodeData;
+    using EdgeDataType  = EdgeData;
 
-    using NodeType = Node<NodeId, NodeData, EdgeData>;
+    using NodeType      = Node<NodeId, NodeData, EdgeData>;
+    using EdgeType      = Edge<NodeId, NodeData, EdgeData>;
 
-    using EdgeType   = Edge<NodeId, NodeData, EdgeData>;
+    using EdgeIdType    = EdgeId<NodeType>;
+    using EdgeRangeType = EdgeRange<EdgeIdType, EdgeType, NodeType, MultiGraph>;
 
     Graph()             = default;
     Graph(Graph&&)      = default;
@@ -520,6 +551,7 @@ class Graph {
     Graph& operator=(const Graph&) = delete;
 
     bool directed() const { return Directed; }
+    bool multigraph() const { return MultiGraph; }
 
     auto nodesSize()  { return _nodes.size(); }
     auto nodesBegin() { return valueIter(_nodes.begin());  }
@@ -572,7 +604,18 @@ class Graph {
         std::swap(startNodeId, endNodeId);
       }
 
-      return _edges.at(EdgeIdType(getNode(startNodeId), getNode(endNodeId))).get();
+      return _edges.find(EdgeIdType(getNode(startNodeId),
+                                    getNode(endNodeId)))->second.get();
+    }
+
+    EdgeRangeType getEdges(NodeId startNodeId, NodeId endNodeId) const {
+      assert(hasEdge(startNodeId, endNodeId));
+      if (!directed() && endNodeId < startNodeId) {
+        std::swap(startNodeId, endNodeId);
+      }
+
+      return _edges.equal_range(EdgeIdType(getNode(startNodeId),
+                                           getNode(endNodeId)));
     }
 
     NodeType* addNode(NodeId id, const NodeData& data = NodeData()) {
@@ -603,16 +646,15 @@ class Graph {
                             : addNode(endNodeId, swapped ? startNodeData
                                                          : endNodeData);
 
-      if (hasEdge(startNodeId, endNodeId)) {
+      if (!multigraph() && hasEdge(startNodeId, endNodeId)) {
         auto edge = getEdge(startNodeId, endNodeId);
         edge->data() = edgeData;
         return edge;
       }
 
       EdgeIdType edgeId(startNode, endNode);
-      _edges[edgeId] =
-        std::unique_ptr<EdgeType>(new EdgeType(startNode, endNode, edgeData));
-      EdgeType* edge = _edges[edgeId].get();
+      EdgeType* edge = new EdgeType(startNode, endNode, edgeData);
+      _edges.emplace(edgeId, std::unique_ptr<EdgeType>(edge));
 
       startNode->addEdge(edge);
       endNode->incIndegree();
@@ -627,10 +669,8 @@ class Graph {
 
   private:
     using NodeCont = std::unordered_map<NodeId, std::unique_ptr<NodeType>>;
+    using EdgeCont   = EdgeContainerT<EdgeIdType, EdgeType, NodeType, MultiGraph>;
 
-    using EdgeIdType = EdgeId<NodeType>;
-    using EdgeCont = std::unordered_map<EdgeIdType, std::unique_ptr<EdgeType>,
-                                        EdgeIdHasher<NodeType>>;
     NodeCont _nodes;
     EdgeCont _edges;
 };
