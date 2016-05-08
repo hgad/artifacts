@@ -120,8 +120,8 @@ shortest-distance algorithm using this class (HackerRank's first graph problem):
 #include <iostream>
 #include "graph.hpp"
 
-using namespace artifacts;
 using namespace std;
+using namespace artifacts;
 
 template <typename NodeId>
 struct NodePairHasher {
