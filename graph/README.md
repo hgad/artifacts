@@ -79,8 +79,8 @@ class Node {
   public:
     using EdgeType = Edge<NodeId, NodeData, EdgeData>;
 
-    NodeId    id()   const;
-    NodeData& data() const;
+    NodeId    id() const;
+    NodeData& data();
 
     // adjacent edges
     auto edgesSize() const;

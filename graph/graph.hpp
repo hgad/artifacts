@@ -98,7 +98,7 @@ class Node {
     using EdgeType = Edge<NodeId, NodeData, EdgeData>;
 
     NodeId    id()   const { return _id;   }
-    NodeData& data() const { return _data; }
+    NodeData& data()       { return _data; }
 
     auto edgesSize() const { return _edges.size(); }
     auto edgesBegin()      { return _edges.begin();  }
