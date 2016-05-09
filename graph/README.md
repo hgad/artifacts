@@ -1,7 +1,7 @@
 Graph
 =====
 
-An easy-to-use graph implementation. Here's the class interface:
+An easy-to-use graph implementation. Here's the Graph class interface:
 
 ```cpp
 template <typename NodeId = int, typename NodeData = int, typename EdgeData = int,
@@ -43,7 +43,7 @@ class Graph {
 
     // depth-first node iterators
     auto depthBegin(NodeId start, bool postorder = false);
-    auto depthEnd(bool postorder = false);
+    auto depthEnd();
 
     // query node/edge
     bool hasNode(NodeId id) const;
@@ -65,10 +65,23 @@ class Graph {
 };
 ```
 
-The breadth-first and depth-first iterators have the regular forward iterator
-interface except that they're non-copyable (therefore, also don't have a suffix
-increment operator). Moreover, the breadth-first iterator has a `parent()`
-method that returns the parent node of the current node.
+One convenient feature in all node and edge iterators is that their `->`
+operator returns a pointer to the `NodeType`/`EdgeType`, which means that you
+can directly access members of `Node`/`Edge` from the iterator (i.e. no need to
+dereference it first).
+
+The breadth-first and depth-first begin iterators have the regular forward
+iterator semantics except that they're non-copyable (which also means they don't
+have a suffix increment operator). This is because they hold a lot of state, so
+it would be grossly inefficient to allow them to be copied.
+
+The breadth-first and depth-first end iterators have different types from their
+begin counterparts. You can copy/move them, but that's pretty much the only
+operation allowed on them.
+
+Finally, the breadth-first iterator has a `parent()` method that returns the
+parent node of the current node in the breadth-first traversal tree (i.e. the
+node that introduced the current node in the traversal).
 
 `addEdge()` adds the terminal nodes if they haven't already been added. `Node`
 and `Edge` have the following interfaces:

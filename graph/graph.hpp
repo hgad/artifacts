@@ -48,7 +48,8 @@ class OtherNodeIter {
       _iter(iter)
     {}
 
-    NodeType* operator*() const { return (*_iter)->otherNode(_node); }
+    NodeType* operator*()  const { return (*_iter)->otherNode(_node); }
+    NodeType* operator->() const { return (*_iter)->otherNode(_node); }
 
     friend bool operator==(const OtherNodeIter& iter1,
                            const OtherNodeIter& iter2) {
@@ -252,9 +253,8 @@ class ValueIter {
       _iter(iter)
     {}
 
-    ValueType operator*() const {
-      return _iter->second;
-    }
+    ValueType operator*()  const { return _iter->second; }
+    ValueType operator->() const { return _iter->second; }
 
     friend bool operator==(const ValueIter& iter1, const ValueIter& iter2) {
       return iter1._iter == iter2._iter;
@@ -284,6 +284,8 @@ ValueIter<Iter> valueIter(Iter iter) {
   return ValueIter<Iter>(iter);
 }
 
+struct BreadthEndIter {};
+
 template <typename NodeType>
 class BreadthIter {
   public:
@@ -302,13 +304,30 @@ class BreadthIter {
 
     NodeType* parent() const { return _parent; }
 
-    NodeType* operator*() const { return _current; }
+    NodeType* operator*()  const { return _current; }
+    NodeType* operator->() const { return _current; }
 
     friend bool operator==(const BreadthIter& iter1, const BreadthIter& iter2) {
       return iter1._current == iter2._current;
     }
 
     friend bool operator!=(const BreadthIter& iter1, const BreadthIter& iter2) {
+      return !(iter1 == iter2);
+    }
+
+    friend bool operator==(const BreadthIter& iter1, BreadthEndIter iter2) {
+      return !iter1._current;
+    }
+
+    friend bool operator==(BreadthEndIter iter1, const BreadthIter& iter2) {
+      return !iter2._current;
+    }
+
+    friend bool operator!=(const BreadthIter& iter1, BreadthEndIter iter2) {
+      return !(iter1 == iter2);
+    }
+
+    friend bool operator!=(BreadthEndIter iter1, const BreadthIter& iter2) {
       return !(iter1 == iter2);
     }
 
@@ -342,6 +361,8 @@ class BreadthIter {
   private:
     using NodePair = std::pair<NodeType*, NodeType*>;
 
+    friend struct BreadthEndIter;
+
     BreadthIter(const BreadthIter&) = delete;
     BreadthIter& operator=(const BreadthIter&) = delete;
 
@@ -365,6 +386,8 @@ BreadthIter<NodeType> breadthIter(NodeType* node) {
   return BreadthIter<NodeType>(node);
 }
 
+struct DepthEndIter {};
+
 template <typename NodeType>
 class DepthIter {
   public:
@@ -386,13 +409,30 @@ class DepthIter {
 
     DepthIter& operator=(DepthIter&&) = default;
 
-    NodeType* operator*() { return _current; }
+    NodeType* operator*()  const { return _current; }
+    NodeType* operator->() const { return _current; }
 
     friend bool operator==(const DepthIter& iter1, const DepthIter& iter2) {
       return iter1._current == iter2._current;
     }
 
     friend bool operator!=(const DepthIter& iter1, const DepthIter& iter2) {
+      return !(iter1 == iter2);
+    }
+
+    friend bool operator==(const DepthIter& iter1, DepthEndIter iter2) {
+      return !iter1._current;
+    }
+
+    friend bool operator==(DepthEndIter iter1, const DepthIter& iter2) {
+      return !iter2._current;
+    }
+
+    friend bool operator!=(const DepthIter& iter1, DepthEndIter iter2) {
+      return !(iter1 == iter2);
+    }
+
+    friend bool operator!=(DepthEndIter iter1, const DepthIter& iter2) {
       return !(iter1 == iter2);
     }
 
@@ -564,7 +604,7 @@ class Graph {
     }
 
     auto breadthEnd() {
-      return BreadthIter<NodeType>();
+      return BreadthEndIter();
     }
 
     auto depthBegin(NodeId start, bool postorder = false) {
@@ -572,8 +612,8 @@ class Graph {
       return depthIter(getNode(start), postorder);
     }
 
-    auto depthEnd(bool postorder = false) {
-      return DepthIter<NodeType>(postorder);
+    auto depthEnd() {
+      return DepthEndIter();
     }
 
     bool hasNode(NodeId id) const {
