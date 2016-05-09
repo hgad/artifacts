@@ -76,8 +76,8 @@ have a suffix increment operator). This is because they hold a lot of state, so
 it would be grossly inefficient to allow them to be copied.
 
 The breadth-first and depth-first end iterators have different types from their
-begin counterparts. You can copy/move them, but that's pretty much the only
-operation allowed on them.
+begin counterparts. You can copy/move them or compare them against their begin
+counterparts, but these are pretty much the only operations allowed on them.
 
 Finally, the breadth-first iterator has a `parent()` method that returns the
 parent node of the current node in the breadth-first traversal tree (i.e. the

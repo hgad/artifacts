@@ -284,7 +284,15 @@ ValueIter<Iter> valueIter(Iter iter) {
   return ValueIter<Iter>(iter);
 }
 
-struct BreadthEndIter {};
+struct BreadthEndIter {
+  friend bool operator==(BreadthEndIter, BreadthEndIter) {
+    return true;
+  }
+
+  friend bool operator!=(BreadthEndIter, BreadthEndIter) {
+    return false;
+  }
+};
 
 template <typename NodeType>
 class BreadthIter {
@@ -386,7 +394,15 @@ BreadthIter<NodeType> breadthIter(NodeType* node) {
   return BreadthIter<NodeType>(node);
 }
 
-struct DepthEndIter {};
+struct DepthEndIter {
+  friend bool operator==(DepthEndIter, DepthEndIter) {
+    return true;
+  }
+
+  friend bool operator!=(DepthEndIter, DepthEndIter) {
+    return false;
+  }
+};
 
 template <typename NodeType>
 class DepthIter {
