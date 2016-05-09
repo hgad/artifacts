@@ -104,7 +104,7 @@ class Edge {
     bool hasNode(const NodeType* n) const;
 
     NodeType* startNode() const;
-    NodeType* endNode() const;
+    NodeType* endNode()   const;
     EdgeData& data();
 
     // given a node on the edge, returns the other node.
