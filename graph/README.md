@@ -83,8 +83,9 @@ Finally, the breadth-first iterator has a `parent()` method that returns the
 parent node of the current node in the breadth-first traversal tree (i.e. the
 node that introduced the current node in the traversal).
 
-`addEdge()` adds the terminal nodes if they haven't already been added. `Node`
-and `Edge` have the following interfaces:
+`addEdge()` adds the terminal nodes if they haven't already been added.
+
+`Node` and `Edge` have the following interfaces:
 
 ```cpp
 template <typename NodeId, typename NodeData, typename EdgeData>
