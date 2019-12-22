@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Author: Haitham Gad
@@ -6,9 +6,9 @@ Date: Feb 4, 2014
 Description: Hangman game using Python Curses.
 """
 
-from random import randint
-from sys import stdout, stderr, exit
-from os.path import isfile
+import random
+import sys
+import os
 import curses
 
 
@@ -27,10 +27,10 @@ class Model():
     return (len(word) > 2 and word.find('-') == -1)
 
   def pickWord(self):
-    index = randint(0, len(self.words) - 1)
+    index = random.randint(0, len(self.words) - 1)
     word = self.words[index].rstrip()
     while not self.validWord(word):
-      index = randint(0, len(self.words) - 1)
+      index = random.randint(0, len(self.words) - 1)
       word = self.words[index].rstrip()
     return word.lower()
 
@@ -79,7 +79,7 @@ class View():
 
   def gallows(self):
     brick = curses.ACS_CKBOARD
-    self.rect(brick, 0, self.width / 2 - 5, 5, self.width)
+    self.rect(brick, 0, self.width // 2 - 5, 5, self.width)
     self.rect(brick, 5, self.width - 11, self.height - 1, self.width)
     self.rect(brick, self.height - 4, 0, self.height - 1, self.width)
 
@@ -94,35 +94,35 @@ class View():
       self.scr.addch(startY + i, startX + i, ch, self.theme1)
 
   def leftLeg(self, erase = False):
-    self.leftLimb(11, self.width / 2, erase)
+    self.leftLimb(11, self.width // 2, erase)
 
   def rightLeg(self, erase = False):
-    self.rightLimb(11, self.width / 2 + 2, erase)
+    self.rightLimb(11, self.width // 2 + 2, erase)
 
   def leftArm(self, erase = False):
-    self.leftLimb(9, self.width / 2, erase)
+    self.leftLimb(9, self.width // 2, erase)
 
   def rightArm(self, erase = False):
-    self.rightLimb(9, self.width / 2 + 2, erase)
+    self.rightLimb(9, self.width // 2 + 2, erase)
 
   def body(self, erase = False):
     ch = ' ' if erase else curses.ACS_VLINE
     for i in range(2):
-      self.scr.addch(9 + i, self.width / 2 + 1, ch, self.theme1)
+      self.scr.addch(9 + i, self.width // 2 + 1, ch, self.theme1)
 
   def head(self, erase = False):
     ch = ' ' if erase else 'O'
-    self.scr.addch(8, self.width / 2 + 1, ch, self.theme1)
+    self.scr.addch(8, self.width // 2 + 1, ch, self.theme1)
 
   def rope(self, erase = False):
     ch1 = ' ' if erase else curses.ACS_VLINE
     ch2 = ' ' if erase else 'O'
 
     for i in range(3):
-      self.scr.addch(5 + i, self.width / 2 + 1, ch1, self.theme1)
+      self.scr.addch(5 + i, self.width // 2 + 1, ch1, self.theme1)
 
-    self.scr.addch(8, self.width / 2 + 1, ' ', self.theme1)
-    self.scr.addch(8, self.width / 2, ch2, self.theme1)
+    self.scr.addch(8, self.width // 2 + 1, ' ', self.theme1)
+    self.scr.addch(8, self.width // 2, ch2, self.theme1)
 
   def hideCursor(self):
     # the only way I found to hide the cursor is to set the the last char in
@@ -249,19 +249,19 @@ class Controller():
 def main():
   filepath = "/usr/share/dict/words"
   try:
-    if not isfile(filepath):
+    if not os.path.isfile(filepath):
       filepath = input("Please enter a newline-delimited words file path: ")
 
     controller = Controller(Model(filepath))
     curses.wrapper(controller.hangman)
   except KeyboardInterrupt:
-    print >>stdout, "Good Bye!"
+    print("Good Bye!", file=sys.stdout)
     return 0
   except IOError:
-    print >>stderr, "Cannot open file: " + filepath + ". Exiting."
+    print("Cannot open file: " + filepath + ". Exiting.", file=sys.stderr)
     return 1
 
 
 if __name__ == "__main__":
-  exit(main())
+  sys.exit(main())
 
